@@ -128,3 +128,101 @@ ___
 ## В конфликтующие файлы Git добавляет специальные маркеры конфликтов, чтобы вы могли исправить их вручную. Чтобы разрешить конфликт, придётся выбрать один из вариантов, либо объединить содержимое по-своему. Разрешив каждый конфликт во всех файлах, запустите git add для каждого файла, чтобы отметить конфликт как решённый. Добавление файла в индекс означает для Git, что все конфликты в нём исправлены.
 ## Если вы хотите использовать графический инструмент для разрешения конфликтов, можно запустить `git mergetool`, который проведет вас по всем конфликтам.
 ## Если результат вас устраивает и вы убедились, что все файлы, где были конфликты, добавлены в индекс — выполните команду `git commit` для создания коммита слияния. 
+___
+___
+## 10. Игнорирование файлов
+### Вы можете заставить Git игнорировать определенные файлы и каталоги, то есть исключить их от отслеживания Git - путем создания одного или нескольких файлов `.gitignore` в вашем репозитории.
+### Записи в файле `.gitignore` могут включать имена или пути, указывающие на:
+- ### временные ресурсы, например, кэши, файлы журналов, скомпилированный код и т. д.
+- ### файлы локальной конфигурации, которые не должны использоваться совместно с другими разработчиками
+- ### файлы, содержащие секретную информацию, такие как пароли входа, ключи и учетные данные
+### Для этого необходимо вписать в файл `.gitignore` имя файла, адрес или расширение.
+```
+При создании в каталоге верхнего уровня правила будут применяться рекурсивно ко всем файлам и подкаталогам во всем репозитории. При создании в подкаталоге правила будут применяться к этому конкретному каталогу и его подкаталогам.
+```
+### Когда файл или каталог игнорируются, это не будет:
+- ### отслеживается Git
+- ### сообщается командами, такими как `git status` или `git diff`
+- ### с такими командами, как `git add -A`
+## Примеры
+Вот некоторые общие примеры правил в файле `.gitignore` , основанные на шаблонах файлов `glob` :
+```
+# Lines starting with `#` are comments.
+
+# Ignore files called 'file.ext'
+file.ext
+
+# Comments can't be on the same line as rules!
+# The following line ignores files called 'file.ext # not a comment'
+file.ext # not a comment 
+
+# Ignoring files with full path.
+# This matches files in the root directory and subdirectories too.
+# i.e. otherfile.ext will be ignored anywhere on the tree.
+dir/otherdir/file.ext
+otherfile.ext
+
+# Ignoring directories
+# Both the directory itself and its contents will be ignored.
+bin/
+gen/
+
+# Glob pattern can also be used here to ignore paths with certain characters.
+# For example, the below rule will match both build/ and Build/
+[bB]uild/
+
+# Without the trailing slash, the rule will match a file and/or
+# a directory, so the following would ignore both a file named `gen`
+# and a directory named `gen`, as well as any contents of that directory
+bin
+gen
+
+# Ignoring files by extension
+# All files with these extensions will be ignored in
+# this directory and all its sub-directories.
+*.apk
+*.class
+
+# It's possible to combine both forms to ignore files with certain
+# extensions in certain directories. The following rules would be
+# redundant with generic rules defined above.
+java/*.apk
+gen/*.class
+
+# To ignore files only at the top level directory, but not in its
+# subdirectories, prefix the rule with a `/`
+/*.apk
+/*.class
+
+# To ignore any directories named DirectoryA 
+# in any depth use ** before DirectoryA
+# Do not forget the last /, 
+# Otherwise it will ignore all files named DirectoryA, rather than directories
+**/DirectoryA/
+# This would ignore 
+# DirectoryA/
+# DirectoryB/DirectoryA/ 
+# DirectoryC/DirectoryB/DirectoryA/
+# It would not ignore a file named DirectoryA, at any level
+
+# To ignore any directory named DirectoryB within a 
+# directory named DirectoryA with any number of 
+# directories in between, use ** between the directories
+DirectoryA/**/DirectoryB/
+# This would ignore 
+# DirectoryA/DirectoryB/ 
+# DirectoryA/DirectoryQ/DirectoryB/ 
+# DirectoryA/DirectoryQ/DirectoryW/DirectoryB/
+
+# To ignore a set of files, wildcards can be used, as can be seen above.
+# A sole '*' will ignore everything in your folder, including your .gitignore file.
+# To exclude specific files when using wildcards, negate them.
+# So they are excluded from the ignore list:
+!.gitignore 
+
+# Use the backslash as escape character to ignore files with a hash (#)
+# (supported since 1.6.2.1)
+\#*#
+```
+Большинство файлов `.gitignore` являются стандартными для разных языков, поэтому для начала работы здесь приведены образцы файлов `.gitignore` перечисленных на языке, из которого можно клонировать или копировать, вносить изменения в ваш проект. Кроме того, для нового проекта вы можете автоматически генерировать стартовый файл с помощью [онлайн-инструмента](https://www.toptal.com/developers/gitignore "гитигнор").
+
